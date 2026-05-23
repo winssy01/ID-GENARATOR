@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>UNIUYO Flyer Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#050505;
+font-family:'Montserrat',sans-serif;
+padding:25px 15px;
+display:flex;
+justify-content:center;
+color:white;
+}
+
+.wrapper{
+width:100%;
+max-width:560px;
+}
+
+.title{
+font-size:28px;
+font-weight:900;
+text-align:center;
+color:#e5c158;
+margin-bottom:5px;
+}
+
+.subtitle{
+text-align:center;
+font-size:11px;
+letter-spacing:3px;
+color:#888;
+margin-bottom:25px;
+}
+
+.panel{
+background:#101010;
+border:1px solid #222;
+border-radius:22px;
+padding:22px;
+}
+
+.field{
+margin-bottom:15px;
+}
+
+.field label{
+display:block;
+font-size:10px;
+letter-spacing:2px;
+margin-bottom:7px;
+color:#aaa;
+font-weight:700;
+text-transform:uppercase;
+}
+
+.field input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid #2c2c2c;
+background:#090909;
+color:white;
+outline:none;
+font-family:'Montserrat',sans-serif;
+}
+
+.upload-box{
+border:2px dashed #333;
+border-radius:15px;
+padding:25px;
+text-align:center;
+position:relative;
+overflow:hidden;
+}
+
+.upload-box input{
+position:absolute;
+inset:0;
+opacity:0;
+cursor:pointer;
+}
+
+.preview{
+width:110px;
+height:110px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid #e5c158;
+display:block;
+margin:auto;
+}
+
+.editor{
+display:none;
+margin-top:15px;
+}
+
+.control-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.control{
+background:#0c0c0c;
+padding:10px;
+border-radius:12px;
+border:1px solid #1f1f1f;
+}
+
+.control label{
+display:block;
+font-size:9px;
+letter-spacing:1px;
+margin-bottom:6px;
+color:#aaa;
+font-weight:700;
+text-transform:uppercase;
+}
+
+.control input{
+width:100%;
+}
+
+.action-buttons{
+display:flex;
+gap:10px;
+margin-top:18px;
+}
+
+button{
+flex:1;
+padding:10px;
+border:none;
+border-radius:12px;
+font-size:10px;
+font-weight:800;
+letter-spacing:1px;
+cursor:pointer;
+transition:.25s;
+font-family:'Montserrat',sans-serif;
+}
+
+button:hover{
+transform:translateY(-1px);
+}
+
+.generate-btn{
+background:linear-gradient(135deg,#6f0716,#9d0d21);
+color:white;
+}
+
+.download-btn{
+background:linear-gradient(135deg,#0f6b2d,#1f9444);
+color:white;
+}
+
+canvas{
+width:100%;
+margin-top:25px;
+border-radius:50%;
+background:black;
+}
+
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+<div class="title">Campaign Flyer Generator</div>
+
+<div class="subtitle">UNIVERSITY OF UYO OFFICIAL DESIGN</div>
+
+<div class="panel">
+
+<div class="field">
+
+<label>Profile Photo</label>
+
+<div style="background:#111;border:1px solid #2a2a2a;border-radius:12px;padding:14px;margin-bottom:12px;font-size:10px;line-height:1.8;color:#bbb;letter-spacing:0.5px;">
+  <div style="color:#e5c158;font-weight:800;font-size:11px;letter-spacing:2px;margin-bottom:6px;">📋 HOW TO USE</div>
+  <div>1. <strong style="color:#fff;">Remove your photo background first</strong> before uploading.<br>
+  Use a free tool like <strong style="color:#e5c158;">remove.bg</strong> or <strong style="color:#e5c158;">photoscissors.com</strong>.</div>
+  <div style="margin-top:6px;">2. Save the result as a <strong style="color:#fff;">PNG file</strong> (with transparent background).</div>
+  <div style="margin-top:6px;">3. Upload the PNG here, then use the sliders to position and resize.</div>
+</div>
+
+<div class="upload-box">
+<input type="file" id="photoInput" accept="image/png">
+
+<div id="uploadText">UPLOAD PNG PHOTO</div>
+
+<img id="previewImage" class="preview" style="display:none;">
+</div>
+
+<div class="editor" id="editor">
+
+<div class="control-grid">
+
+<div class="control">
+<label>Resize Image</label>
+<input type="range" min="0.5" max="2" step="0.1" value="1" id="zoom">
+</div>
+
+<div class="control">
+<label>Image Left / Right</label>
+<input type="range" min="-300" max="300" value="0" id="moveX">
+</div>
+
+<div class="control">
+<label>Image Up / Down</label>
+<input type="range" min="-300" max="300" value="0" id="moveY">
+</div>
+
+<div class="control">
+<label>Name Text Size</label>
+<input type="range" min="30" max="90" value="62" id="nameSize">
+</div>
+
+<div class="control">
+<label>Name Up / Down</label>
+<input type="range" min="-120" max="120" value="0" id="nameY">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="field">
+<label>Full Name</label>
+<input type="text" id="name" value="INYANG EDIDIONG GODWIN">
+</div>
+
+<div class="field">
+<label>Position</label>
+<input type="text" id="role" value="INFORMATION DIRECTOR">
+</div>
+
+<div class="field">
+<label>Department</label>
+<input type="text" id="dept" value="DEPARTMENT OF SOIL SCIENCE">
+</div>
+
+<div class="field">
+<label>Faculty</label>
+<input type="text" id="faculty" value="FACULTY OF AGRICULTURE">
+</div>
+
+<div class="field">
+<label>Institution</label>
+<input type="text" id="uni" value="UNIVERSITY OF UYO">
+</div>
+
+<div class="field">
+<label>Academic Session</label>
+<input type="text" id="session" value="2025/2026 ACADEMIC SESSION">
+</div>
+
+<div class="action-buttons">
+
+<button class="generate-btn" onclick="generateFlyer()">GENERATE</button>
+<button class="download-btn" onclick="downloadFlyer()">DOWNLOAD</button>
+
+</div>
+
+</div>
+
+<canvas id="canvas" width="1080" height="1080"></canvas>
+
+</div>
+
+<script>
+
+let uploadedImage = null;
+
+const photoInput = document.getElementById("photoInput");
+const previewImage = document.getElementById("previewImage");
+
+photoInput.addEventListener("change", function(e){
+
+const file = e.target.files[0];
+if(!file) return;
+
+const reader = new FileReader();
+
+reader.onload = function(event){
+
+uploadedImage = new Image();
+
+uploadedImage.onload = function(){
+generateFlyer();
+};
+
+uploadedImage.src = event.target.result;
+
+previewImage.src = event.target.result;
+previewImage.style.display = "block";
+
+document.getElementById("uploadText").style.display = "none";
+document.getElementById("editor").style.display = "block";
+
+};
+
+reader.readAsDataURL(file);
+
+});
+
+function generateFlyer(){
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+ctx.clearRect(0,0,1080,1080);
+
+const bg = new Image();
+const logo = new Image();
+
+bg.crossOrigin = "anonymous";
+logo.crossOrigin = "anonymous";
+
+bg.src = "https://i.postimg.cc/zD6bYvg0/image-removebg-preview-(13).png";
+logo.src = "https://i.postimg.cc/Df9kT3y9/image-removebg-preview-(14).png";
+
+bg.onload = function(){
+
+ctx.save();
+ctx.beginPath();
+ctx.arc(540,540,515,0,Math.PI*2);
+ctx.clip();
+
+ctx.drawImage(bg,0,0,1080,1080);
+
+if(uploadedImage){
+
+const scale = parseFloat(document.getElementById("zoom").value);
+const moveX = parseInt(document.getElementById("moveX").value);
+const moveY = parseInt(document.getElementById("moveY").value);
+
+const width = 500 * scale;
+const height = 650 * scale;
+
+ctx.save();
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = "high";
+ctx.filter = "contrast(108%) saturate(110%) brightness(100%)";
+
+// DRAW IMAGE DIRECTLY
+ctx.drawImage(uploadedImage, 300 + moveX, 110 + moveY, width, height);
+
+ctx.filter = "none";
+
+// BOTTOM FADE ONLY — smooth blend into the dark info section
+const fadeBottom = ctx.createLinearGradient(0, 110 + moveY + height * 0.55, 0, 110 + moveY + height);
+fadeBottom.addColorStop(0, "rgba(0,0,0,0)");
+fadeBottom.addColorStop(0.5, "rgba(0,0,0,0.25)");
+fadeBottom.addColorStop(1, "rgba(0,0,0,0.85)");
+ctx.fillStyle = fadeBottom;
+ctx.fillRect(300 + moveX, 110 + moveY + height * 0.55, width, height * 0.45);
+
+// GLOBAL BOTTOM DARK BAND — behind text area
+const fadeBand = ctx.createLinearGradient(0, 580, 0, 1080);
+fadeBand.addColorStop(0, "rgba(0,0,0,0)");
+fadeBand.addColorStop(0.35, "rgba(20,0,5,0.6)");
+fadeBand.addColorStop(1, "rgba(20,0,5,0.92)");
+ctx.fillStyle = fadeBand;
+ctx.fillRect(0, 580, 1080, 500);
+
+ctx.restore();
+}
+
+ctx.restore();
+
+/* borders */
+ctx.beginPath();
+ctx.arc(540,540,520,0,Math.PI*2);
+ctx.lineWidth = 28;
+ctx.strokeStyle = "#220005";
+ctx.stroke();
+
+ctx.beginPath();
+ctx.arc(540,540,493,0,Math.PI*2);
+ctx.lineWidth = 10;
+ctx.strokeStyle = "#fff";
+ctx.stroke();
+
+ctx.beginPath();
+ctx.arc(540,540,480,0,Math.PI*2);
+ctx.lineWidth = 3;
+ctx.strokeStyle = "#2a0008";
+ctx.stroke();
+
+const nameSize = parseInt(document.getElementById("nameSize").value);
+const nameY = parseInt(document.getElementById("nameY").value);
+
+ctx.fillStyle = "#fff";
+ctx.textAlign = "center";
+
+let nameText = document.getElementById("name").value.toUpperCase();
+let dynamicNameSize = nameSize;
+
+ctx.font = "900 " + dynamicNameSize + "px Montserrat";
+
+while(ctx.measureText(nameText).width > 850){
+dynamicNameSize -= 2;
+ctx.font = "900 " + dynamicNameSize + "px Montserrat";
+}
+
+ctx.fillText(nameText,540,770 + nameY);
+
+/* ROLE (fixed) */
+ctx.fillStyle = "#e5c158";
+ctx.font = "800 40px Montserrat";
+ctx.fillText(document.getElementById("role").value.toUpperCase(),540,840);
+
+/* INFO */
+ctx.fillStyle = "#fff";
+ctx.font = "700 28px Montserrat";
+ctx.fillText(document.getElementById("dept").value.toUpperCase(),540,870);
+ctx.fillText(document.getElementById("faculty").value.toUpperCase(),540,915);
+ctx.fillText(document.getElementById("uni").value.toUpperCase(),540,950);
+
+/* SESSION */
+const sessionWidth = 480;
+const sessionHeight = 45;
+
+ctx.fillStyle = "#efefef";
+
+roundRect(ctx,540-(sessionWidth/2),955,sessionWidth,sessionHeight,30,true,false);
+
+ctx.fillStyle = "#000000";
+
+let sessionText = document.getElementById("session").value.toUpperCase();
+let sessionSize = 24;
+
+ctx.font = "700 " + sessionSize + "px Montserrat";
+ctx.fillText(sessionText,540,955+(sessionHeight/2)+8);
+
+/* logo */
+logo.onload = function(){
+ctx.beginPath();
+ctx.arc(760,220,65,0,Math.PI*2);
+ctx.fillStyle = "#fff";
+ctx.fill();
+ctx.drawImage(logo,695,155,130,130);
+};
+
+};
+
+}
+
+function roundRect(ctx,x,y,w,h,r,fill){
+ctx.beginPath();
+ctx.moveTo(x+r,y);
+ctx.lineTo(x+w-r,y);
+ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+ctx.lineTo(x+w,y+h-r);
+ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+ctx.lineTo(x+r,y+h);
+ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+ctx.lineTo(x,y+r);
+ctx.quadraticCurveTo(x,y,x+r,y);
+ctx.closePath();
+if(fill) ctx.fill();
+}
+
+function downloadFlyer(){
+const link = document.createElement("a");
+link.download = "flyer.jpg";
+link.href = document.getElementById("canvas").toDataURL("image/jpeg",1.0);
+link.click();
+}
+
+document.querySelectorAll("input").forEach(i=>{
+i.addEventListener("input",generateFlyer);
+});
+
+</script>
+
+</body>
+</html>
